@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consenso IA — Metodología de la Investigación</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <style>
+    /* ═══════════════════════════════════════════════
+       TOKENS
+    ═══════════════════════════════════════════════ */
+    :root {
+      --bg:         #08090f;
+      --bg-card:    #0e1019;
+      --bg-inner:   #0a0c14;
+      --border:     #1c2030;
+      --border-hi:  #2b3352;
+
+      --text:       #e8e4f2;
+      --muted:      #6b6e84;
+      --dim:        #3a3d52;
+
+      --gpt:        #00c27c;
+      --gpt-a:      rgba(0,194,124,.09);
+      --gpt-b:      rgba(0,194,124,.22);
+
+      --cvs:        #f59340;
+      --cvs-a:      rgba(245,147,64,.09);
+      --cvs-b:      rgba(245,147,64,.22);
+
+      --cweb:       #a77ef6;
+      --cweb-a:     rgba(167,126,246,.09);
+      --cweb-b:     rgba(167,126,246,.22);
+
+      --green:      #22c55e;
+      --green-a:    rgba(34,197,94,.12);
+      --yellow:     #e8b400;
+      --yellow-a:   rgba(232,180,0,.10);
+      --orange:     #f97316;
+      --orange-a:   rgba(249,115,22,.09);
+
+      --font:  'Sora', sans-serif;
+      --mono:  'DM Mono', monospace;
+      --r:     14px;
+      --r-sm:  8px;
+    }
+
+    /* ═══════════════════════════════════════════════
+       RESET
+    ═══════════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 15px;
+      line-height: 1.65;
+      min-height: 100vh;
+      background-image:
+        radial-gradient(ellipse 900px 500px at 50% 0%, #1a1f3e 0%, transparent 65%);
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    /* ═══════════════════════════════════════════════
+       HEADER
+    ═══════════════════════════════════════════════ */
+    .hero {
+      padding: 4.5rem 2rem 3.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(circle 700px at 20% 110%, rgba(167,126,246,.07), transparent),
+        radial-gradient(circle 700px at 80% 110%, rgba(0,194,124,.05), transparent);
+      pointer-events: none;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      font-family: var(--mono);
+      font-size: .68rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border: 1px solid var(--border-hi);
+      padding: .35rem .85rem;
+      border-radius: 100px;
+      margin-bottom: 1.5rem;
+    }
+    .hero-eyebrow .pulse {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+      animation: blink 2s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 55%{opacity:.3} }
+
+    .hero-title {
+      font-size: clamp(2.2rem, 5.5vw, 3.8rem);
+      font-weight: 800;
+      letter-spacing: -.045em;
+      line-height: 1.05;
+      margin-bottom: .9rem;
+      background: linear-gradient(140deg, #fff 15%, #cdb8fb 55%, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      position: relative;
+    }
+
+    .hero-sub {
+      font-size: .92rem;
+      color: var(--muted);
+      max-width: 500px;
+      margin: 0 auto 2.25rem;
+      line-height: 1.75;
+    }
+
+    .ai-legend {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: .65rem;
+    }
+    .leg-chip {
+      display: flex;
+      align-items: center;
+      gap: .45rem;
+      padding: .42rem .95rem;
+      border-radius: 100px;
+      font-size: .78rem;
+      font-weight: 600;
+    }
+    .leg-chip .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+    .leg-chip.gpt  { background: var(--gpt-a);  color: var(--gpt);  border: 1px solid var(--gpt-b); }
+    .leg-chip.cvs  { background: var(--cvs-a);  color: var(--cvs);  border: 1px solid var(--cvs-b); }
+    .leg-chip.cweb { background: var(--cweb-a); color: var(--cweb); border: 1px solid var(--cweb-b); }
+
+    /* ═══════════════════════════════════════════════
+       LAYOUT WRAPPER
+    ═══════════════════════════════════════════════ */
+    .wrap { max-width: 920px; margin: 0 auto; padding: 0 1.25rem; }
+
+    .sect-head {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      margin-bottom: 1.1rem;
+    }
+    .sect-label {
+      font-family: var(--mono);
+      font-size: .65rem;
+      font-weight: 500;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .sect-line { flex: 1; height: 1px; background: var(--border); }
+
+    /* ═══════════════════════════════════════════════
+       SUMMARY GRID
+    ═══════════════════════════════════════════════ */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: .65rem;
+      margin-bottom: 3rem;
+    }
+    @media (max-width: 680px) { .summary-grid { grid-template-columns: repeat(3,1fr); } }
+    @media (max-width: 460px) { .summary-grid { grid-template-columns: repeat(2,1fr); } }
+
+    .s-card {
+      display: block;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      padding: .85rem .7rem;
+      text-align: center;
+      cursor: pointer;
+      transition: transform .15s, border-color .15s, background .15s;
+    }
+    .s-card:hover { transform: translateY(-2px); background: #121525; border-color: var(--border-hi); }
+    .s-card.lv-perfect  { border-color: rgba(34,197,94,.22); }
+    .s-card.lv-majority { border-color: rgba(232,180,0,.22); }
+    .s-card.lv-split    { border-color: rgba(249,115,22,.18); }
+
+    .s-qn {
+      font-family: var(--mono);
+      font-size: .6rem;
+      color: var(--dim);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: .2rem;
+    }
+    .s-ans {
+      font-size: 1rem;
+      font-weight: 800;
+      font-family: var(--mono);
+      letter-spacing: .03em;
+    }
+    .lv-perfect  .s-ans { color: var(--green);  }
+    .lv-majority .s-ans { color: var(--yellow); }
+    .lv-split    .s-ans { color: var(--orange); }
+
+    .s-pct {
+      font-family: var(--mono);
+      font-size: .6rem;
+      color: var(--dim);
+      margin-top: .2rem;
+    }
+
+    /* ═══════════════════════════════════════════════
+       QUESTION CARDS
+    ═══════════════════════════════════════════════ */
+    .q-list { display: flex; flex-direction: column; gap: .85rem; margin-bottom: 4rem; }
+
+    .q-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      overflow: hidden;
+      transition: border-color .2s;
+    }
+    .q-card:hover { border-color: var(--border-hi); }
+    .q-card.open  { border-color: rgba(99,102,241,.3); }
+
+    /* Head */
+    .q-head {
+      display: flex;
+      align-items: flex-start;
+      gap: .875rem;
+      padding: 1.1rem 1.3rem;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .q-badge {
+      width: 2.1rem; height: 2.1rem;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--mono);
+      font-size: .75rem;
+      font-weight: 500;
+      flex-shrink: 0;
+      margin-top: .1rem;
+    }
+    .q-badge.lv-perfect  { background: var(--green-a);  color: var(--green);  border: 1px solid rgba(34,197,94,.22); }
+    .q-badge.lv-majority { background: var(--yellow-a); color: var(--yellow); border: 1px solid rgba(232,180,0,.22); }
+    .q-badge.lv-split    { background: var(--orange-a); color: var(--orange); border: 1px solid rgba(249,115,22,.18); }
+
+    .q-meta { flex: 1; min-width: 0; }
+
+    .q-topic-row {
+      display: flex;
+      align-items: center;
+      gap: .45rem;
+      margin-bottom: .3rem;
+      flex-wrap: wrap;
+    }
+    .q-topic {
+      font-family: var(--mono);
+      font-size: .6rem;
+      color: var(--dim);
+      text-transform: uppercase;
+      letter-spacing: .07em;
+    }
+    .q-type-tag {
+      font-size: .58rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      padding: .12rem .45rem;
+      border-radius: 4px;
+    }
+    .tag-inc { background: rgba(239,68,68,.12); color: #f87171; border: 1px solid rgba(239,68,68,.18); }
+    .tag-cor { background: rgba(34,197,94,.1);  color: #4ade80; border: 1px solid rgba(34,197,94,.18); }
+    .tag-dud { background: rgba(234,179,8,.1);  color: #facc15; border: 1px solid rgba(234,179,8,.18); }
+
+    .q-text { font-size: .865rem; font-weight: 500; color: var(--text); line-height: 1.5; }
+    .q-text strong { color: #fff; font-weight: 700; }
+    .q-text em { color: var(--muted); font-style: italic; }
+
+    .q-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: .3rem;
+      flex-shrink: 0;
+    }
+    .q-consensus {
+      font-family: var(--mono);
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+    }
+    .q-consensus.lv-perfect  { color: var(--green);  }
+    .q-consensus.lv-majority { color: var(--yellow); }
+    .q-consensus.lv-split    { color: var(--orange); }
+
+    .q-chevron {
+      color: var(--dim);
+      font-size: .8rem;
+      transition: transform .3s cubic-bezier(.4,0,.2,1), color .15s;
+      line-height: 1;
+    }
+    .q-card.open .q-chevron { transform: rotate(180deg); color: var(--muted); }
+
+    /* Body accordion (CSS grid trick) */
+    .q-body {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows .38s cubic-bezier(.4,0,.2,1);
+    }
+    .q-card.open .q-body { grid-template-rows: 1fr; }
+    .q-body-inner { overflow: hidden; }
+
+    .q-inner {
+      padding: 0 1.3rem 1.3rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ═══════════════════════════════════════════════
+       OPTIONS
+    ═══════════════════════════════════════════════ */
+    .opts-label {
+      font-family: var(--mono);
+      font-size: .6rem;
+      color: var(--dim);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      padding-top: 1.1rem;
+      margin-bottom: .7rem;
+    }
+
+    .opt {
+      display: grid;
+      grid-template-columns: 1.6rem 1fr;
+      gap: .6rem;
+      padding: .85rem .9rem;
+      border-radius: var(--r-sm);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--dim);
+      margin-bottom: .45rem;
+      background: var(--bg-inner);
+      transition: border-color .15s;
+    }
+    .opt.lv-high   { border-left-color: var(--green);  border-color: rgba(34,197,94,.15); }
+    .opt.lv-med    { border-left-color: var(--yellow); border-color: rgba(232,180,0,.15); }
+    .opt.lv-low    { border-left-color: var(--orange); border-color: rgba(249,115,22,.12); }
+    .opt.lv-none   { border-left-color: var(--dim);   }
+
+    .opt-key {
+      font-family: var(--mono);
+      font-size: .78rem;
+      font-weight: 500;
+      padding-top: .08rem;
+      color: var(--dim);
+    }
+    .opt.lv-high .opt-key  { color: var(--green);  }
+    .opt.lv-med  .opt-key  { color: var(--yellow); }
+    .opt.lv-low  .opt-key  { color: var(--orange); }
+
+    .opt-body { display: flex; flex-direction: column; gap: .55rem; }
+
+    .opt-text {
+      font-size: .8rem;
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    .vote-row {
+      display: flex;
+      align-items: center;
+      gap: .55rem;
+    }
+
+    /* Colored dots (one per AI) */
+    .vdots { display: flex; gap: .25rem; }
+    .vd {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      border: 1.5px solid transparent;
+      flex-shrink: 0;
+    }
+    .vd.on-gpt  { background: var(--gpt);  border-color: var(--gpt);  box-shadow: 0 0 5px rgba(0,194,124,.5); }
+    .vd.on-cvs  { background: var(--cvs);  border-color: var(--cvs);  box-shadow: 0 0 5px rgba(245,147,64,.5); }
+    .vd.on-cweb { background: var(--cweb); border-color: var(--cweb); box-shadow: 0 0 5px rgba(167,126,246,.5); }
+    .vd.off-gpt  { background: transparent; border-color: rgba(0,194,124,.18); }
+    .vd.off-cvs  { background: transparent; border-color: rgba(245,147,64,.18); }
+    .vd.off-cweb { background: transparent; border-color: rgba(167,126,246,.18); }
+
+    .vbar-track {
+      flex: 1;
+      height: 4px;
+      background: var(--border);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+    .vbar {
+      height: 100%;
+      border-radius: 100px;
+      width: 0;
+      transition: width .85s cubic-bezier(.4,0,.2,1);
+    }
+    .vbar.lv-high { background: linear-gradient(90deg,#15803d,var(--green)); }
+    .vbar.lv-med  { background: linear-gradient(90deg,#a16207,var(--yellow)); }
+    .vbar.lv-low  { background: linear-gradient(90deg,#c2410c,var(--orange)); }
+    .vbar.lv-none { background: var(--dim); }
+
+    .vpct {
+      font-family: var(--mono);
+      font-size: .7rem;
+      font-weight: 500;
+      min-width: 2.5rem;
+      text-align: right;
+    }
+    .vpct.lv-high  { color: var(--green);  }
+    .vpct.lv-med   { color: var(--yellow); }
+    .vpct.lv-low   { color: var(--orange); }
+    .vpct.lv-none  { color: var(--dim);    }
+
+    /* ═══════════════════════════════════════════════
+       AI VOTE CARDS
+    ═══════════════════════════════════════════════ */
+    .ai-sect {
+      border-top: 1px solid var(--border);
+      padding-top: .95rem;
+      margin-top: 1.1rem;
+    }
+    .ai-sect-label {
+      font-family: var(--mono);
+      font-size: .6rem;
+      color: var(--dim);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: .7rem;
+    }
+    .ai-grid {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: .6rem;
+    }
+    @media (max-width: 580px) { .ai-grid { grid-template-columns: 1fr; } }
+
+    .ai-card {
+      border-radius: var(--r-sm);
+      padding: .7rem .85rem;
+      border: 1px solid;
+    }
+    .ai-card.gpt  { background: var(--gpt-a);  border-color: var(--gpt-b);  }
+    .ai-card.cvs  { background: var(--cvs-a);  border-color: var(--cvs-b);  }
+    .ai-card.cweb { background: var(--cweb-a); border-color: var(--cweb-b); }
+
+    .ai-name {
+      font-family: var(--mono);
+      font-size: .62rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      margin-bottom: .3rem;
+    }
+    .ai-card.gpt  .ai-name { color: var(--gpt);  }
+    .ai-card.cvs  .ai-name { color: var(--cvs);  }
+    .ai-card.cweb .ai-name { color: var(--cweb); }
+
+    .ai-ans {
+      font-family: var(--mono);
+      font-size: .88rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: .04em;
+    }
+
+    .corr-block {
+      margin-top: .45rem;
+      padding-top: .4rem;
+      border-top: 1px solid rgba(255,255,255,.06);
+    }
+    .corr-old {
+      font-family: var(--mono);
+      font-size: .72rem;
+      color: var(--dim);
+      text-decoration: line-through;
+      margin-right: .3rem;
+    }
+    .corr-tag {
+      font-size: .58rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      padding: .1rem .35rem;
+      border-radius: 3px;
+      background: rgba(167,126,246,.15);
+      color: #c084fc;
+      vertical-align: middle;
+    }
+    .corr-why {
+      margin-top: .3rem;
+      font-size: .71rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    /* Notes */
+    .dispute-note {
+      margin-top: .8rem;
+      padding: .7rem .95rem;
+      border-left: 3px solid var(--yellow);
+      background: var(--yellow-a);
+      border-radius: 0 var(--r-sm) var(--r-sm) 0;
+      border: 1px solid rgba(232,180,0,.15);
+      border-left: 3px solid var(--yellow);
+      font-size: .77rem;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+    .dispute-note strong { color: var(--yellow); font-weight: 600; }
+
+    .info-note {
+      margin-top: .8rem;
+      padding: .7rem .95rem;
+      background: rgba(99,102,241,.06);
+      border: 1px solid rgba(99,102,241,.14);
+      border-radius: var(--r-sm);
+      font-size: .77rem;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    /* ═══════════════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════════════ */
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      border-top: 1px solid var(--border);
+      font-family: var(--mono);
+      font-size: .68rem;
+      color: var(--dim);
+    }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+
+<script>
+/* ════════════════════════════════════════════════
+   DATOS
+════════════════════════════════════════════════ */
+const AIs = [
+  { key:'gpt',  label:'ChatGPT WEB',     cls:'gpt',  onCls:'on-gpt',  offCls:'off-gpt'  },
+  { key:'cvs',  label:'Claude VS Code',  cls:'cvs',  onCls:'on-cvs',  offCls:'off-cvs'  },
+  { key:'cweb', label:'Claude Web',      cls:'cweb', onCls:'on-cweb', offCls:'off-cweb' }
+];
+
+const Qs = [
+  {
+    id:1, topic:'Marco Teórico', type:'incorrectas',
+    text:'En torno al marco teórico, seleccionar la opción o las opciones <strong>INCORRECTAS</strong>:',
+    opts:[
+      {k:'A', t:'Se relaciona con la dimensión conceptual de todo proyecto de investigación, por ende, se lo define como un conjunto de ideas y procedimientos que le sirven al investigador para llevar a término su actividad.'},
+      {k:'B', t:'Se relaciona con la dimensión histórica y conceptual de todo proyecto de investigación, por ende, el marco teórico siempre debe mostrar historicidad, un contexto social específico, como así también académico, que establezca las coordenadas básicas a partir de las cuales se investigará la disciplina determinada.'},
+      {k:'C', t:'Se relaciona con un cuerpo de conocimientos de igual nivel de abstracción que, por ende, se encuentran articulados y relacionados entre sí, con el objetivo finalmente de desarrollar, conceptualizar y explicar la porción de realidad que se quiere explicar.'}
+    ],
+    votes:{
+      gpt:  {i:['A','C'], f:['A','C']},
+      cvs:  {i:['A','C'], f:['A','C']},
+      cweb: {i:['A','C'], f:['A','C']}
+    }
+  },
+  {
+    id:2, topic:'Marco Teórico — Elementos', type:'correctas',
+    text:'En torno a los elementos del marco teórico, seleccione la opción o opciones <strong>CORRECTAS</strong>:',
+    opts:[
+      {k:'A', t:'Acepciones generales — antecedentes — definición de conceptos centrales.'},
+      {k:'B', t:'Antecedentes históricos y contextuales — variables a contrastar — establecimiento de fundamentos históricos.'},
+      {k:'C', t:'Consideraciones generales — objetivos y preguntas de la investigación — exposición de bases teóricas.'}
+    ],
+    votes:{
+      gpt:  {i:['A'], f:['A']},
+      cvs:  {i:['A'], f:['A']},
+      cweb: {i:['A'], f:['A']}
+    },
+    note:'Ninguna fuente describe estos elementos con esos nombres exactos. Las tres IAs eligieron A por coherencia estructural. Se recomienda confirmar con el material de cátedra.'
+  },
+  {
+    id:3, topic:'Marco Teórico — Funciones', type:'correctas',
+    text:'En torno a las funciones que posee el marco teórico, seleccione la o las opciones <strong>CORRECTAS</strong>:',
+    opts:[
+      {k:'A', t:'Proporciona un marco teórico de referencia para interpretar las conclusiones de la investigación.'},
+      {k:'B', t:'Conduce al establecimiento de hipótesis o afirmaciones que se decidirán más tarde si deberán someterse o no a prueba, pudiendo darse entonces, según los resultados, desviaciones del planteamiento original.'},
+      {k:'C', t:'Permite que se descubran nuevas líneas de investigación y áreas de desarrollo de futuras investigaciones.'}
+    ],
+    votes:{
+      gpt:  {i:['A','B','C'], f:['A','B','C']},
+      cvs:  {i:['A','C'],     f:['A','C'],     corr:{dropped:'B', why:'La frase "se decidirá si se somete o no a prueba" es conceptualmente incorrecta: las hipótesis siempre se someten a prueba.'}},
+      cweb: {i:['A','B','C'], f:['A','B','C']}
+    },
+    dispute:'<strong>Opción B en debate:</strong> Claude VS Code la descarta por imprecisión. ChatGPT y Claude Web la aceptan como función clásica del M.T. según Sampieri.'
+  },
+  {
+    id:4, topic:'Marco Teórico — Etapas', type:'correctas',
+    text:'En torno a las etapas de elaboración del marco teórico, seleccione la o las opciones <strong>CORRECTAS</strong>:',
+    opts:[
+      {k:'A', t:'Revisión de la bibliografía — elección de los distintos tipos de fuentes — desarrollo de una teoría.'},
+      {k:'B', t:'Revisión de la bibliografía — adopción de una teoría — exposición y análisis de las conceptualizaciones.'},
+      {k:'C', t:'Revisión de la bibliografía — elección de los distintos tipos de fuentes — exposición y análisis de las perspectivas teóricas, antecedentes e investigaciones elegidas.'}
+    ],
+    votes:{
+      gpt:  {i:['C'], f:['C']},
+      cvs:  {i:['C'], f:['C']},
+      cweb: {i:['C'], f:['C']}
+    }
+  },
+  {
+    id:5, topic:'Marco Teórico — Pautas', type:'incorrecta',
+    text:'Mencione cuál de las pautas a tener en cuenta para hacer un marco teórico adecuado es <strong>INCORRECTA</strong>:',
+    opts:[
+      {k:'A', t:'Los conceptos elegidos deben estar organizados y disponerse de manera lógica, esto otorgará una mayor formalidad a la investigación, como así también favorecerá la comprensión del tema y de la lectura.'},
+      {k:'B', t:'Para realizar un marco teórico no contamos con un único modo, no debe olvidarse que el apartado debe permitir demostrar, justificar y apoyar las hipótesis de modo ordenado y coherente, no dando lugar al replanteo de preguntas de mayor profundidad que puedan desviar el propósito de la investigación.'},
+      {k:'C', t:'La información de relleno debe ser evitada. La única bibliografía que debe citarse y resultar útil y central es aquella que genera un mayor conocimiento futuro y que a su vez permita mayores interrelaciones y contextos teóricos dentro de la investigación.'}
+    ],
+    votes:{
+      gpt:  {i:['B'], f:['B']},
+      cvs:  {i:['B'], f:['B']},
+      cweb: {i:['B'], f:['B']}
+    }
+  },
+  {
+    id:6, topic:'Estructura Tripartita', type:'correctas',
+    text:'La estructura tripartita de un proyecto de investigación indica que:',
+    opts:[
+      {k:'A', t:'Existen 3 marcos teóricos para la mayoría de los trabajos de investigación (supuestos de carácter abarcativo necesarios para argumentar en torno a la pregunta de investigación, diseño de la prueba y la hipótesis investigativa).'},
+      {k:'B', t:'Cada parte del proyecto de investigación debe estar justificada por una serie de supuestos teóricos, conceptuales y metodológicos que aporten peso y le dé solidez al proyecto.'},
+      {k:'C', t:'Son siempre varios supuestos teóricos que se utilizan para justificar cada una de las partes del proyecto de investigación, los cuales deben ordenarse minuciosamente para que la pregunta de investigación pueda responderse debidamente.'}
+    ],
+    votes:{
+      gpt:  {i:['B'],     f:['B']},
+      cvs:  {i:['B','C'], f:['B'], corr:{dropped:'C', why:'La opción C reduce la estructura tripartita a solo la pregunta de investigación, cuando debe justificar pregunta, hipótesis y diseño de prueba.'}},
+      cweb: {i:['B'],     f:['B']}
+    }
+  },
+  {
+    id:7, topic:'Gallego Ramos — Consideraciones Finales', type:'incorrecta',
+    text:'Menciona cuál de las opciones en torno a las consideraciones finales que plantea Gallego Ramos es <strong>INCORRECTA</strong>:',
+    opts:[
+      {k:'A', t:'La revisión de las fuentes consultadas deben ir aportando al diseño del marco teórico, del objeto de estudio, diseño de la investigación y del estado actual del conocimiento, optando el investigador por la estrategia más efectiva.'},
+      {k:'B', t:'El investigador demuestra sus habilidades investigativas en el uso correcto que haga de las fuentes bibliográficas, lo que va a dar solidez a su estudio, si bien es deseable que se utilice un lenguaje técnico, el investigador no debe olvidar que la sencillez a la hora de escribir será fundamental y muy valorada por la comunidad científica.'},
+      {k:'C', t:'La construcción del marco teórico debe plantearse como un momento independiente de otras partes de la investigación, precisamente el momento en el que el investigador debe mostrar el conocimiento adquirido en el tema relacionado con el estado en cuestión, como así con los antecedentes.'}
+    ],
+    votes:{
+      gpt:  {i:['C'], f:['C']},
+      cvs:  {i:['C'], f:['C']},
+      cweb: {i:['C'], f:['C']}
+    }
+  },
+  {
+    id:8, topic:'Gallego Ramos — 5 Estados', type:'correctas',
+    text:'Según Gallego Ramos, los 5 estados por los que atraviesa el investigador son:',
+    opts:[
+      {k:'A', t:'Parte esencial y fundamental de todo trabajo de investigación por el que todos los investigadores pasan, cumpliendo el orden predeterminado e indicado.'},
+      {k:'B', t:'Reflejan dificultades importantes en el investigador relacionados con la dificultad para determinar lo central del marco teórico, y por ende, seleccionar la información adecuada.'},
+      {k:'C', t:'Muestran las diferentes instancias por las que puede pasar el investigador en el proceso de determinar lo central, el objeto de estudio, y se consideran siempre estados inestables de idas y vueltas.'}
+    ],
+    votes:{
+      gpt:  {i:['B','C'], f:['B','C']},
+      cvs:  {i:['B','C'], f:['C'], corr:{dropped:'B', why:'El estado de "avance sistemático" es el estado deseable, no una dificultad. B generaliza "dificultades" a los 5 estados cuando solo aplica a 4 de ellos.'}},
+      cweb: {i:['C'],     f:['C']}
+    },
+    dispute:'<strong>Opción B en debate:</strong> ChatGPT la mantiene porque aplica a 4 de 5 estados. Claude VS Code y Claude Web la descartan porque "avance sistemático" es el estado ideal, no una dificultad.'
+  },
+  {
+    id:9, topic:'Sampieri — Planteamiento del Problema', type:'correctas',
+    text:'Para plantear un problema es fundamental: (seleccione la o las opciones <strong>CORRECTAS</strong>):',
+    opts:[
+      {k:'A', t:'Poder justificar debidamente la investigación, establecer preguntas guía para diseñar los objetivos del proyecto.'},
+      {k:'B', t:'Realizar un planteamiento ordenado y claro del tema de la investigación en el que se explicite cómo está pensado el trabajo.'},
+      {k:'C', t:'Haber profundizado previamente en el tema en cuestión, hasta lograr la expresión correcta de la relación existente entre las variables de estudio.'}
+    ],
+    votes:{
+      gpt:  {i:['C'],        f:['C']},
+      cvs:  {i:['C'],        f:['C']},
+      cweb: {i:['A','B','C'], f:['C'], corr:{dropped:'A y B', why:'A invierte el orden de Sampieri (objetivos primero, preguntas después). B describe la Introducción del TIF, no el planteamiento del problema.'}}
+    }
+  },
+  {
+    id:10, topic:'Sampieri — Valor Potencial', type:'correctas',
+    text:'¿Cuáles son los criterios para evaluar el valor potencial de una investigación? (Selecciona la o las opciones <strong>CORRECTAS</strong>):',
+    opts:[
+      {k:'A', t:'Considerar su tendencia, alcance y convivencia.'},
+      {k:'B', t:'Tener en cuenta su utilidad práctica, sus beneficios y su posibilidad de aplicación futura.'},
+      {k:'C', t:'Vislumbrar su valor teórico para responder a alguna incógnita en relación al conocimiento de la temática en cuestión.'}
+    ],
+    votes:{
+      gpt:  {i:['B','C'], f:['B','C']},
+      cvs:  {i:['B','C'], f:['B','C']},
+      cweb: {i:['B','C'], f:['B','C']}
+    }
+  },
+  {
+    id:11, topic:'Introducción del TIF', type:'dudosa',
+    text:'Con respecto a la introducción, menciona cuál o cuáles de las opciones <strong>podría no ser correcta</strong>:',
+    opts:[
+      {k:'A', t:'Debe ser clara y mostrar dominio de los temas que se estudiarán, poniendo a quien lee en contexto.'},
+      {k:'B', t:'Define los conceptos centrales y en ocasiones puede encontrarse en la misma un repaso de la historia o teorías que considerará.'},
+      {k:'C', t:'Utiliza un lenguaje coloquial y no tan especializado, dado que su lectura puede orientarse a todo tipo de público.'}
+    ],
+    votes:{
+      gpt:  {i:['C'],     f:['C']},
+      cvs:  {i:['B','C'], f:['B','C']},
+      cweb: {i:['C'],     f:['C']}
+    },
+    dispute:'<strong>Opción B en debate:</strong> Claude VS Code argumenta que definir conceptos y repasar teorías es función del Marco Teórico. ChatGPT y Claude Web contraargumentan que el PDF de la introducción sí incluye definiciones de conceptos directamente en su ejemplo.'
+  },
+  {
+    id:12, topic:'Estado del Arte', type:'correctas',
+    text:'Indique cuál o cuáles de las afirmaciones corresponden con el tema — <em>El estado del arte NO…</em>',
+    opts:[
+      {k:'A', t:'Suele organizarse de manera minuciosa ni destacando ningún contenido en particular.'},
+      {k:'B', t:'Toma como guía para su armado el planteamiento del problema de la investigación, pero sí los objetivos de la misma.'},
+      {k:'C', t:'Debe equipararse con el marco teórico de la investigación por ser aspectos de abordaje distintos de una o más temáticas o variables de estudio.'}
+    ],
+    votes:{
+      gpt:  {i:['A','B','C'], f:['A','B','C']},
+      cvs:  {i:['C'],         f:['C']},
+      cweb: {i:['C'],         f:['C']}
+    },
+    note:'ChatGPT posiblemente interpretó la pregunta de forma diferente, marcando todas las afirmaciones que en su visión contradicen el texto. Claude VS Code y Claude Web señalan solo C como la afirmación verdaderamente correcta.'
+  }
+];
+
+/* ════════════════════════════════════════════════
+   HELPERS
+════════════════════════════════════════════════ */
+function voteCounts(q) {
+  const c = {};
+  q.opts.forEach(o => c[o.k] = 0);
+  AIs.forEach(ai => q.votes[ai.key].f.forEach(k => c[k]++));
+  return c;
+}
+
+function consensus(q) {
+  const c = voteCounts(q);
+  return q.opts.map(o => o.k).filter(k => c[k] >= 2);
+}
+
+function cardLevel(q) {
+  const c = voteCounts(q);
+  const vals = Object.values(c);
+  const hasDispute = vals.some(v => v > 0 && v < 3);
+  if (!hasDispute) return 'lv-perfect';
+  if (vals.some(v => v === 2)) return 'lv-majority';
+  return 'lv-split';
+}
+
+function optLevel(pct) {
+  if (pct >= 100) return 'lv-high';
+  if (pct >= 67)  return 'lv-med';
+  if (pct > 0)    return 'lv-low';
+  return 'lv-none';
+}
+
+function typeTag(t) {
+  const m = {
+    incorrectas:['tag-inc','Incorrectas'],
+    incorrecta: ['tag-inc','Incorrecta'],
+    correctas:  ['tag-cor','Correctas'],
+    dudosa:     ['tag-dud','Posible incorrecta']
+  };
+  const [cls, lbl] = m[t] || ['tag-cor', t];
+  return `<span class="q-type-tag ${cls}">${lbl}</span>`;
+}
+
+function numFmt(n) { return n < 10 ? '0'+n : ''+n; }
+
+function pctColor(lv) {
+  return {
+    'lv-high':'var(--green)',
+    'lv-med':'var(--yellow)',
+    'lv-low':'var(--orange)',
+    'lv-none':'var(--dim)'
+  }[lv];
+}
+
+/* ════════════════════════════════════════════════
+   RENDER QUESTION
+════════════════════════════════════════════════ */
+function renderQ(q) {
+  const counts = voteCounts(q);
+  const lv = cardLevel(q);
+  const con = consensus(q);
+
+  /* Options */
+  const optsHtml = q.opts.map(o => {
+    const cnt = counts[o.k] || 0;
+    const pct = Math.round(cnt / 3 * 100);
+    const ol = optLevel(pct);
+
+    const dots = AIs.map(ai => {
+      const voted = q.votes[ai.key].f.includes(o.k);
+      return `<div class="vd ${voted ? ai.onCls : ai.offCls}" title="${ai.label}: ${voted ? '✓ votó' : '✗ no votó'}"></div>`;
+    }).join('');
+
+    return `
+      <div class="opt ${ol}">
+        <div class="opt-key">${o.k}</div>
+        <div class="opt-body">
+          <div class="opt-text">${o.t}</div>
+          <div class="vote-row">
+            <div class="vdots">${dots}</div>
+            <div class="vbar-track"><div class="vbar ${ol}" data-pct="${pct}"></div></div>
+            <div class="vpct ${ol}">${pct}%</div>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+
+  /* AI cards */
+  const aiHtml = AIs.map(ai => {
+    const v = q.votes[ai.key];
+    const corrHtml = v.corr ? `
+      <div class="corr-block">
+        <span class="corr-old">${v.i.join(', ')}</span><span class="corr-tag">Corregido</span>
+        <div class="corr-why">${v.corr.why}</div>
+      </div>` : '';
+    return `
+      <div class="ai-card ${ai.cls}">
+        <div class="ai-name">${ai.label}</div>
+        <div class="ai-ans">${v.f.join(' + ')}</div>
+        ${corrHtml}
+      </div>`;
+  }).join('');
+
+  const disputeHtml = q.dispute ? `<div class="dispute-note">${q.dispute}</div>` : '';
+  const noteHtml    = q.note    ? `<div class="info-note">${q.note}</div>` : '';
+
+  return `
+    <div class="q-card" id="q${q.id}">
+      <div class="q-head" onclick="toggle(${q.id})">
+        <div class="q-badge ${lv}">${numFmt(q.id)}</div>
+        <div class="q-meta">
+          <div class="q-topic-row">
+            <span class="q-topic">${q.topic}</span>
+            ${typeTag(q.type)}
+          </div>
+          <div class="q-text">${q.text}</div>
+        </div>
+        <div class="q-right">
+          <div class="q-consensus ${lv}">${con.length ? con.join(', ') : '?'}</div>
+          <div class="q-chevron">▾</div>
+        </div>
+      </div>
+      <div class="q-body">
+        <div class="q-body-inner">
+          <div class="q-inner">
+            <div class="opts-label">Opciones &amp; votos</div>
+            ${optsHtml}
+            <div class="ai-sect">
+              <div class="ai-sect-label">Respuesta final por IA</div>
+              <div class="ai-grid">${aiHtml}</div>
+              ${disputeHtml}
+              ${noteHtml}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+/* ════════════════════════════════════════════════
+   RENDER PAGE
+════════════════════════════════════════════════ */
+function render() {
+  const perfect  = Qs.filter(q => cardLevel(q) === 'lv-perfect').length;
+  const majority = Qs.filter(q => cardLevel(q) === 'lv-majority').length;
+  const split    = Qs.filter(q => cardLevel(q) === 'lv-split').length;
+
+  const summaryHtml = Qs.map(q => {
+    const lv  = cardLevel(q);
+    const con = consensus(q);
+    const c   = voteCounts(q);
+    const maxCnt = Math.max(...Object.values(c));
+    const maxPct = Math.round(maxCnt / 3 * 100);
+    return `
+      <a class="s-card ${lv}" href="#q${q.id}" onclick="openCard(${q.id})">
+        <div class="s-qn">P.${q.id}</div>
+        <div class="s-ans">${con.length ? con.join('+') : '?'}</div>
+        <div class="s-pct">${maxPct}% acuerdo</div>
+      </a>`;
+  }).join('');
+
+  document.getElementById('root').innerHTML = `
+    <header class="hero">
+      <div class="hero-eyebrow"><span class="pulse"></span>3 IAs · 12 preguntas · Correcciones cruzadas</div>
+      <h1 class="hero-title">Consenso IA</h1>
+      <p class="hero-sub">Comparación cruzada de respuestas al parcial de Metodología de la Investigación. Cada IA revisó las respuestas de la otra y actualizó las suyas.</p>
+      <div class="ai-legend">
+        <div class="leg-chip gpt"><div class="dot"></div>ChatGPT WEB</div>
+        <div class="leg-chip cvs"><div class="dot"></div>Claude VS Code</div>
+        <div class="leg-chip cweb"><div class="dot"></div>Claude Web</div>
+      </div>
+    </header>
+
+    <div class="wrap">
+      <div class="sect-head" style="margin-top:2.5rem">
+        <span class="sect-label">Resumen — ${perfect} acuerdo total · ${majority} mayoría · ${split} divididas</span>
+        <div class="sect-line"></div>
+      </div>
+      <div class="summary-grid">${summaryHtml}</div>
+
+      <div class="sect-head">
+        <span class="sect-label">Preguntas</span>
+        <div class="sect-line"></div>
+      </div>
+      <div class="q-list">
+        ${Qs.map(renderQ).join('')}
+      </div>
+    </div>
+
+    <footer>Parcial · Metodología de la Investigación · Fuentes: Gallego Ramos, Sampieri cap. 3, Guía de Introducción TIF, Video Estado del Arte (Madeline Villegas)</footer>
+  `;
+
+  /* Animate bars with IntersectionObserver */
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.width = e.target.dataset.pct + '%';
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.vbar').forEach(b => obs.observe(b));
+}
+
+/* ════════════════════════════════════════════════
+   INTERACTIONS
+════════════════════════════════════════════════ */
+function toggle(id) {
+  const card = document.getElementById('q' + id);
+  const isOpening = !card.classList.contains('open');
+  card.classList.toggle('open');
+  if (isOpening) animateBars(card);
+}
+
+function openCard(id) {
+  const card = document.getElementById('q' + id);
+  card.classList.add('open');
+  setTimeout(() => animateBars(card), 50);
+}
+
+function animateBars(card) {
+  card.querySelectorAll('.vbar').forEach(b => {
+    b.style.width = b.dataset.pct + '%';
+  });
+}
+
+render();
+</script>
+</body>
+</html>
